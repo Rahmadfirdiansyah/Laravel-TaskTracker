@@ -1,6 +1,6 @@
 # 📋 Task Management System (Laravel 11 + Vue 3)
 
-Aplikasi manajemen tugas (Task Management) sederhana dengan fitur papan Kanban (To Do, In Progress, Done) dan sistem kategori. Project ini menggunakan Laravel sebagai REST API dan Vue 3 sebagai Frontend.
+Aplikasi manajemen tugas (Task Management) sederhana dengan fitur papan Kanban (To Do, In Progress, Done) dan sistem kategori. Project ini menggunakan Laravel sebagai REST API dan Vue 3 sebagai Frontend (masih tahap project belum jadi sempurna).
 
 ## 🚀 Fitur Utama
 - **Dashboard Project**: Ringkasan daftar project yang sedang dikerjakan.
