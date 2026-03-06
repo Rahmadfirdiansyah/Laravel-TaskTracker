@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\DashboardController;
 
 Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -15,6 +16,8 @@ Route::apiResource('projects', ProjectController::class)->except(['destroy']);
 
 // API Tasks
 Route::apiResource('tasks', TaskController::class);
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
