@@ -20,6 +20,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/ProjectListView.vue'),
         meta: { requiresAuth: true },
     },
+    {
+        path: '/projects/:id',
+        name: 'ProjectDetail',
+        component: () => import('../views/ProjectDetailView.vue'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/task',
+        name: 'Task',
+        component: () => import('../views/TaskListView.vue'),
+        meta: { requiresAuth: true },
+    },
+
 ];
 
 export default routes;

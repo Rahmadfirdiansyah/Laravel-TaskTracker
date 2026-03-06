@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Project;
 
 use Illuminate\Http\Request;
@@ -11,14 +12,17 @@ class ProjectController extends Controller
     {
         $query = Project::query();
 
-        // Searching by judul
         if ($request->has('search')) {
-            $query->where('title', 'ilike', '%' . $request->search . '%'); // ilike untuk PostgreSQL (case-insensitive)
+            $search = $request->search;
+            // GANTI 'ilike' MENJADI 'like'
+            // Pastikan nama kolomnya 'name', karena di Vue kita pakai 'name'
+            $query->where('name', 'like', '%' . $search . '%');
         }
 
-        return response()->json([
-            'data' => $query->latest()->get()
-        ]);
+        // Ambil data terbaru di atas
+        $projects = $query->orderBy('created_at', 'desc')->get();
+
+        return response()->json(['data' => $projects]);
     }
 
     public function store(Request $request)

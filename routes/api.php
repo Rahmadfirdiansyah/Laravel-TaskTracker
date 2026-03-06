@@ -5,20 +5,26 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Api\AuthController; // Import AuthController sekalian biar rapi
 
-Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
+// Rute Publik (Tidak butuh token)
+Route::post('/login', [AuthController::class, 'login']);
+
+// Rute Terlindungi (Wajib pakai token)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
+
+    // Auth
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    // API Projects (Tanpa method destroy)
+    Route::apiResource('projects', ProjectController::class)->except(['destroy']);
+
+    // API Tasks
+    Route::apiResource('tasks', TaskController::class);
 });
-
-// API Projects (Tanpa method destroy)
-Route::apiResource('projects', ProjectController::class)->except(['destroy']);
-
-// API Tasks
-Route::apiResource('tasks', TaskController::class);
-
-Route::get('/dashboard', [DashboardController::class, 'index']);
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');

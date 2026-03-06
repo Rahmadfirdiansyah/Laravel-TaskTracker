@@ -15,9 +15,9 @@ export interface Task {
     id: number;
     title: string;
     description?: string;
-    status: 'pending' | 'in_progress' | 'completed';
-    project_id: number;
+    status: 'pending' | 'in_progress' | 'completed' | 'todo' | 'done';
     user_id: number;
+    category_id: number;
 }
 
 export interface Category {
