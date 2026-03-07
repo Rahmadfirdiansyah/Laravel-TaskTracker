@@ -52,57 +52,15 @@
       </div>
     </div>
 
-    <div v-if="showTaskModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 overflow-hidden">
-        <h2 class="text-xl font-bold mb-4 text-gray-800">{{ isEditing ? 'Edit Task' : 'Tambah Task Baru' }}</h2>
-        
-        <form @submit.prevent="submitTask">
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1">Judul Task</label>
-              <input v-model="taskForm.title" type="text" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"/>
-            </div>
-
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1">Kategori</label>
-              <select v-model.number="taskForm.category_id" required class="w-full px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                <option :value="null" disabled>-- Pilih Kategori --</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                  {{ cat.name || cat.nama }}
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1">Deskripsi</label>
-              <textarea v-model="taskForm.description" required rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">Status</label>
-                <select v-model="taskForm.status" class="w-full px-4 py-2 border rounded-lg bg-white">
-                  <option value="todo">To Do</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="done">Done</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-bold text-gray-700 mb-1">Due Date</label>
-                <input v-model="taskForm.due_date" type="date" required class="w-full px-4 py-2 border rounded-lg outline-none"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex justify-end gap-3 mt-8">
-            <button type="button" @click="closeTaskModal" class="px-4 py-2 text-gray-500 font-medium">Batal</button>
-            <button type="submit" :disabled="isSubmitting" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold disabled:opacity-50">
-              {{ isSubmitting ? 'Proses...' : 'Simpan Task' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <TaskModal 
+      :is-open="showTaskModal" 
+      :is-editing="isEditing" 
+      :initial-data="taskForm" 
+      :categories="categories" 
+      :loading="isSubmitting" 
+      @close="closeTaskModal" 
+      @submit="submitTask" 
+    />
   </div>
 </template>
 
@@ -111,6 +69,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from '../src/services/api';
 import TaskCard from '../components/TaskCard.vue';
+import TaskModal from '../components/TaskModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -180,7 +139,14 @@ const fetchCategories = async () => {
   try {
     const response = await api.get('/categories');
     const data = response.data.data || response.data;
-    categories.value = Array.isArray(data) ? data : [];
+    
+    if (Array.isArray(data)) {
+      categories.value = data;
+    } else if (typeof data === 'object' && data !== null) {
+      categories.value = Object.values(data); // Konversi objek jadi array
+    } else {
+      categories.value = [];
+    }
   } catch (e) { console.error(e); }
 };
 
@@ -201,20 +167,24 @@ const openTaskModal = (task: any = null) => {
 
 const closeTaskModal = () => { showTaskModal.value = false; };
 
-const submitTask = async () => {
-  if (!taskForm.value.category_id) return alert('Pilih Kategori!');
+const submitTask = async (formData: any) => {
+  // Ganti taskForm.value dengan formData bawaan dari modal
+  if (!formData.category_id) return alert('Pilih Kategori!');
+  
   isSubmitting.value = true;
   try {
-    const payload = { ...taskForm.value, category_id: Number(taskForm.value.category_id) };
+    const payload = { ...formData, category_id: Number(formData.category_id) };
+    
     if (isEditing.value) {
-      await api.put(`/tasks/${taskForm.value.id}`, payload);
+      await api.put(`/tasks/${formData.id}`, payload);
     } else {
       await api.post('/tasks', payload);
     }
+    
     closeTaskModal();
-    await fetchProjectData();
+    await fetchProjectData(); // Refresh board otomatis
   } catch (error: any) {
-    alert(error.response?.data?.message || 'Gagal!');
+    alert(error.response?.data?.message || 'Gagal menyimpan data!');
   } finally {
     isSubmitting.value = false;
   }

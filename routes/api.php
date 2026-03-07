@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Api\AuthController; // Import AuthController sekalian biar rapi
 
 // Rute Publik (Tidak butuh token)
@@ -27,4 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // API Tasks
     Route::apiResource('tasks', TaskController::class);
+
+    Route::get('/categories', [CategoryController::class, 'index']);
 });

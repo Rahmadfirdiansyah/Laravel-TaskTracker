@@ -10,14 +10,13 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
+        // Ganti 'ilike' jadi 'like' jika pakai MySQL (Laragon)
         $query = Task::with(['project', 'category']);
 
-        // Searching by judul task
         if ($request->has('search')) {
-            $query->where('title', 'ilike', '%' . $request->search . '%');
+            $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        // Filter berdasarkan project_id jika dikirimkan dari frontend
         if ($request->has('project_id')) {
             $query->where('project_id', $request->project_id);
         }
@@ -55,16 +54,23 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
 
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
+            'project_id'  => 'required|exists:projects,id',
             'category_id' => 'required|exists:categories,id',
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'due_date' => 'required|date',
+            'due_date'    => 'required|date',
+            'status'      => 'required|in:todo,in_progress,done', // TAMBAHKAN INI
         ]);
 
         $task->update($validated);
 
-        return response()->json(['message' => 'Task berhasil diupdate', 'data' => $task]);
+        // PENTING: Load ulang kategorinya agar Vue tidak kehilangan data kategori setelah edit
+        $task->load('category');
+
+        return response()->json([
+            'message' => 'Task berhasil diupdate',
+            'data' => $task
+        ]);
     }
 
     public function destroy(Request $request, $id)
