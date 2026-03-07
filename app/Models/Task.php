@@ -11,6 +11,7 @@ class Task extends Model
         'category_id',
         'created_by',
         'deleted_by',
+        'status',
         'title',
         'description',
         'due_date'

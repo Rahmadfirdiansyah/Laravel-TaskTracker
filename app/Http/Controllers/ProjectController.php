@@ -30,6 +30,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'status'      => 'required|in:active,archived',
         ], [
             'name.required' => 'Nama project wajib diisi.',
             'description.required' => 'Deskripsi project wajib diisi.',

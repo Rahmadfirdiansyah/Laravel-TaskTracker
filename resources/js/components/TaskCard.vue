@@ -8,7 +8,7 @@
         class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-opacity-10" 
         :class="statusBgAndTextColorClass"
       >
-        {{ task.status.replace('_', ' ') }}
+        {{ String(task.status || 'todo').replace('_', ' ') }}
       </span>
       
       <span 

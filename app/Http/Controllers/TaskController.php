@@ -32,6 +32,7 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'due_date' => 'required|date',
+            'status'      => 'required|in:todo,in_progress,done',
         ], [
             'project_id.required' => 'Project wajib dipilih.',
             'category_id.required' => 'Kategori task wajib dipilih.',
@@ -59,7 +60,7 @@ class TaskController extends Controller
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
             'due_date'    => 'required|date',
-            'status'      => 'required|in:todo,in_progress,done', // TAMBAHKAN INI
+            'status'      => 'required|in:todo,in_progress,done',   
         ]);
 
         $task->update($validated);

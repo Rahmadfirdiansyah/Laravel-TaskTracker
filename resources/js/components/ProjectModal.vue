@@ -73,12 +73,14 @@ const props = defineProps<{
 
 const emit = defineEmits(['close', 'submit']);
 
-// State form lokal DITAMBAH status default 'active'
+// State form lokal
 const form = ref({ name: '', description: '', status: 'active' });
 
-// Reset form setiap kali modal dibuka, status dikembalikan ke 'active'
+// Reset form HANYA saat modal ditutup (berubah menjadi false),
+// bukan saat modal dibuka, untuk menghindari balapan (race condition)
+// jika props 'show' telat bereaksi.
 watch(() => props.show, (isOpen) => {
-  if (isOpen) {
+  if (!isOpen) {
     form.value = { name: '', description: '', status: 'active' };
   }
 });

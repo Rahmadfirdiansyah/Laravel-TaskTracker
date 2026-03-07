@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('deleted_by')->nullable()->constrained('users');
             $table->string('title');
             $table->text('description');
+            $table->string('status')->default('todo');
             $table->date('due_date');
             $table->softDeletes();
             $table->timestamps();
