@@ -23,7 +23,7 @@ Aplikasi manajemen tugas (Task Management) sederhana dengan fitur papan Kanban (
 ## 📦 Panduan Instalasi
 
 ### 1. Setup Backend (Laravel)
-```bash
+
 # Clone repository
 git clone [https://github.com/username/nama-repo.git](https://github.com/username/nama-repo.git)
 cd nama-repo
@@ -46,10 +46,11 @@ npm install
 # Jalankan server development Vue
 npm run dev
 
-# jalankan server laravel
+#jalankan server laravel
 php artisan serve
 
-# 📖 API Documentation
+
+## 📖 API Documentation
 
 Dokumentasi ini menjelaskan endpoint API yang digunakan untuk sistem **Kanban Task Management**.
 
