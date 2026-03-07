@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -39,14 +40,27 @@ export default routes;
 
 // Navigation guard
 export const setupRouterGuard = (router: any) => {
-    router.beforeEach((to: any, from: any, next: any) => {
-        const authStore = useAuthStore();
+    router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+        const token = localStorage.getItem('token');
 
-        if (to.meta.requiresAuth && !authStore.token) {
-            next('/login');
-        } else if (to.meta.guestOnly && authStore.token) {
-            next('/');
-        } else {
+        // PENTING: Cek Meta requiresAuth
+        if (to.matched.some(record => record.meta.requiresAuth)) {
+            if (!token) {
+                // Gunakan 'Login' (Sesuai dengan name di atas)
+                next({ name: 'Login' });
+            } else {
+                next();
+            }
+        }
+        // Cek Meta guestOnly (Untuk halaman Login)
+        else if (to.matched.some(record => record.meta.guestOnly)) {
+            if (token) {
+                next({ name: 'Projects' });
+            } else {
+                next();
+            }
+        }
+        else {
             next();
         }
     });

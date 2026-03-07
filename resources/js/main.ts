@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
-import routes, { setupRouterGuard } from './routes/index';
+import routes, { setupRouterGuard } from './routes';
 
 const app = createApp(App);
 const pinia = createPinia();
