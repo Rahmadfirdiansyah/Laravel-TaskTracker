@@ -183,7 +183,7 @@ POST /api/tasks
 ![login page](public/image/login.png)
 
 - **Dashboard page**
-![login page](public/image/dashboard.png.png)
+![login page](public/image/dashboard.png)
 
 - **Project page**
 ![login page](public/image/project.png)
